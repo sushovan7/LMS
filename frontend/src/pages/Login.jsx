@@ -10,7 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "@/features/api/authApi";
+import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [signupInput, setSignupInput] = useState({
@@ -23,6 +29,56 @@ export default function Login() {
     password: "",
   });
 
+  const [
+    registerUser,
+    {
+      data: registerData,
+      error: registerError,
+      isLoading: registerIsLoading,
+      isSuccess: registerIsSuccess,
+    },
+  ] = useRegisterUserMutation();
+  const [
+    loginUser,
+    {
+      data: loginData,
+      error: loginError,
+      isLoading: loginIsLoading,
+      isSuccess: loginIsSuccess,
+    },
+  ] = useLoginUserMutation();
+
+  async function handleLoginAndSignUp(type) {
+    const inputData = type === "signup" ? signupInput : loginInput;
+    const action = type === "signup" ? registerUser : loginUser;
+    await action(inputData);
+  }
+
+  useEffect(() => {
+    if (registerIsSuccess && registerData) {
+      toast.success("Signup successful");
+    } else {
+      toast.error("Signup failed");
+    }
+    if (registerError) {
+      toast.error("Signup failed");
+    }
+
+    if (loginIsSuccess && loginData) {
+      toast.success("Login successful");
+    } else {
+      toast.error("Login failed");
+    }
+    if (loginError) toast.error("Login failed");
+  }, [
+    registerIsSuccess,
+    loginIsSuccess,
+    loginData,
+    registerData,
+    loginError,
+    registerError,
+  ]);
+
   function onChangeHandler(e, type) {
     const { name, value } = e.target;
     if (type === "signup") {
@@ -30,11 +86,6 @@ export default function Login() {
     } else {
       setLoginInput((prev) => ({ ...prev, [name]: value }));
     }
-  }
-
-  function handleLoginAndSignUp(type) {
-    const inputData = type === "signup" ? signupInput : loginInput;
-    console.log(inputData);
   }
 
   return (
@@ -86,8 +137,18 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleLoginAndSignUp("signup")}>
-                Signup
+              <Button
+                disabled={registerIsLoading}
+                onClick={() => handleLoginAndSignUp("signup")}
+              >
+                {registerIsLoading ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    <span className="sr-only">Loading...</span>
+                  </>
+                ) : (
+                  "Signup"
+                )}
               </Button>
             </CardFooter>
           </Card>
@@ -123,8 +184,17 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleLoginAndSignUp("login")}>
-                Login
+              <Button
+                disabled={loginIsLoading}
+                onClick={() => handleLoginAndSignUp("login")}
+              >
+                {loginIsLoading ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
             </CardFooter>
           </Card>
