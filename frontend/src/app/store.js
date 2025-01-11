@@ -1,10 +1,9 @@
-import { userAuthApi } from "@/features/api/userAuthApi";
 import { configureStore } from "@reduxjs/toolkit";
+import { rootReducer } from "./rootReducer";
+import { userAuthApi } from "@/features/api/userAuthApi";
 
 export const appStore = configureStore({
-  reducer: {
-    [userAuthApi.reducerPath]: userAuthApi.reducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(userAuthApi.middleware),
 });
