@@ -10,12 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
+import { Loader } from "lucide-react";
 import {
   useLoginUserMutation,
   useRegisterUserMutation,
-} from "@/features/api/authApi";
-import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+} from "@/features/api/userAuthApi";
 import toast from "react-hot-toast";
 
 export default function Login() {
@@ -33,18 +33,18 @@ export default function Login() {
     registerUser,
     {
       data: registerData,
-      error: registerError,
       isLoading: registerIsLoading,
       isSuccess: registerIsSuccess,
+      isError: registerIsError,
     },
   ] = useRegisterUserMutation();
   const [
     loginUser,
     {
       data: loginData,
-      error: loginError,
       isLoading: loginIsLoading,
       isSuccess: loginIsSuccess,
+      isError: loginIsError,
     },
   ] = useLoginUserMutation();
 
@@ -55,29 +55,24 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (registerIsSuccess && registerData) {
-      toast.success("Signup successful");
-    } else {
-      toast.error("Signup failed");
-    }
-    if (registerError) {
-      toast.error("Signup failed");
+    if (registerIsSuccess) {
+      toast.success("User registered successfully");
+      setSignupInput({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } else if (registerIsError) {
+      toast.error("failed to register");
     }
 
-    if (loginIsSuccess && loginData) {
-      toast.success("Login successful");
-    } else {
-      toast.error("Login failed");
+    if (loginIsSuccess) {
+      toast.success("User logged in successfully");
+      setLoginInput({ email: "", password: "" });
+    } else if (loginIsError) {
+      toast.error("Failed to login");
     }
-    if (loginError) toast.error("Login failed");
-  }, [
-    registerIsSuccess,
-    loginIsSuccess,
-    loginData,
-    registerData,
-    loginError,
-    registerError,
-  ]);
+  }, [registerIsSuccess, registerIsError, loginIsSuccess, loginIsError]);
 
   function onChangeHandler(e, type) {
     const { name, value } = e.target;
@@ -143,8 +138,8 @@ export default function Login() {
               >
                 {registerIsLoading ? (
                   <>
-                    <Loader className="mr-2 h-4 w-4 animate-spin" />
-                    <span className="sr-only">Loading...</span>
+                    <Loader className="w-4 h-4 animate-spin" />
+                    ...Please wait
                   </>
                 ) : (
                   "Signup"
@@ -190,7 +185,8 @@ export default function Login() {
               >
                 {loginIsLoading ? (
                   <>
-                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader className="w-4 h-4 animate-spin" />
+                    ...Please wait
                   </>
                 ) : (
                   "Login"
