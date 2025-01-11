@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDb } from "./db/db.js";
 import { rootRouter } from "./routes/index.js";
+import cookieParser from "cookie-parser";
 const app = express();
 
 dotenv.config();
@@ -20,7 +21,14 @@ app.use(
   })
 );
 
-app.use(cors({}));
+app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use("/api/v1", rootRouter);
 

@@ -13,6 +13,7 @@ export async function signup(req, res) {
   }
 
   const { name, email, password } = req.body;
+  console.log(req.body);
 
   try {
     const emailAlreadyExists = await userModel.findOne({
@@ -49,6 +50,7 @@ export async function signup(req, res) {
       message: "User signed up successfully",
     });
   } catch (error) {
+    console.error("Error during user registration:", error);
     return res.status(500).json({
       success: false,
       message: "Something went wrong in registering user",

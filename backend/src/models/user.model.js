@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["INSTRUCTOR", "STUDENT"],
-      default: "",
     },
     enrolledCourses: {
       type: mongoose.Schema.Types.ObjectId,
