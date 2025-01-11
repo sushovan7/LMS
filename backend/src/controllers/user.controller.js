@@ -1,7 +1,7 @@
 import { loginSchema, signupSchema } from "../utils/zodSchema.js";
 import { userModel } from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/generateToken.js";
 
 export async function signup(req, res) {
   const requiredBody = signupSchema.safeParse(req.body);
@@ -13,13 +13,11 @@ export async function signup(req, res) {
   }
 
   const { name, email, password } = req.body;
-  console.log(req.body);
 
   try {
     const emailAlreadyExists = await userModel.findOne({
       email,
     });
-    console.log(emailAlreadyExists);
 
     if (emailAlreadyExists) {
       return res.status(409).json({
@@ -70,21 +68,18 @@ export async function login(req, res) {
   const { email, password } = req.body;
 
   try {
-    const verifyingUser = await userModel.findOne({
+    const user = await userModel.findOne({
       email,
     });
 
-    if (!verifyingUser) {
+    if (!user) {
       return res.status(400).json({
         success: false,
         message: "Ivalid credentials",
       });
     }
 
-    const verifyingPassword = await bcrypt.compare(
-      password,
-      verifyingUser.password
-    );
+    const verifyingPassword = await bcrypt.compare(password, user.password);
 
     if (!verifyingPassword) {
       return res.status(400).json({
@@ -93,21 +88,23 @@ export async function login(req, res) {
       });
     }
 
-    const token = jwt.sign(
-      {
-        _id: verifyingUser._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: process.env.JWT_EXPIRY,
-      }
-    );
+    const token = await generateToken(user._id);
 
-    return res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      token: token,
-    });
+    const loggedInUser = await userModel
+      .findOne(user._id)
+      .select("-refreshToken -password");
+
+    return res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+      })
+      .json({
+        success: true,
+        message: "User loggedIn successfully",
+        user: loggedInUser,
+      });
   } catch (error) {
     return res.status(500).json({
       success: false,
