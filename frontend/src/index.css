@@ -67,3 +67,7 @@
     @apply font-inter;
   }
 }
+
+.active hr {
+  display: block;
+}

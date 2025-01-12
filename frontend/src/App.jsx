@@ -2,11 +2,11 @@ import React from "react";
 import Login from "./pages/Login";
 import { Routes, Route } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
-import Home from "./pages/Home";
+import Home from "./pages/Client/Home";
 
 function App() {
   return (
-    <div className="max-w-7xl bg-gray-600 mx-auto">
+    <div className="max-w-7xl mx-auto">
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />

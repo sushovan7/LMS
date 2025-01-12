@@ -4,9 +4,11 @@ import Navbar from "@/components/Navbar";
 
 function RootLayout() {
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <Navbar />
-      <Outlet />
+      <div className="mt-20">
+        <Outlet />
+      </div>
     </div>
   );
 }
