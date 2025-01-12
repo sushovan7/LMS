@@ -6,7 +6,7 @@ import Home from "./pages/Client/Home";
 
 function App() {
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl px-2 mx-auto">
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />

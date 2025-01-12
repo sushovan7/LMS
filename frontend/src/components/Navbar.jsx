@@ -28,7 +28,7 @@ export default Navbar;
 
 function DesktopNavbar({ user, navigate }) {
   return (
-    <nav className="w-full hidden fixed top-0 left-0 z-50">
+    <nav className="w-full  hidden fixed top-0 left-0 z-10">
       <div className="max-w-7xl  mx-auto px-2 border-b py-4 shadow flex items-center justify-between">
         <Link to="/" className="font-mono tracking-wider text-xl font-bold">
           Course
