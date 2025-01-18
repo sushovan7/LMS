@@ -114,3 +114,93 @@ export async function login(req, res) {
 }
 
 export async function logout(req, res) {}
+
+//admin protected routes
+export async function getAllUsers(req, res) {
+  try {
+    const users = await userModel.find({}).select("-password");
+    if (!users) {
+      return res.status(400).json({
+        success: false,
+        message: "No users present",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: "Something went wrong while fetching users",
+      error: error.message,
+    });
+  }
+}
+
+export async function updateUsers(req, res) {
+  const { id } = req.params;
+  const { name } = req.body;
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "Id is needed",
+    });
+  }
+  try {
+    const user = await userModel.findByIdAndUpdate(
+      id,
+      {
+        name: name,
+      },
+      {
+        new: true,
+      }
+    );
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "User updated",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update user",
+      error: error.message,
+    });
+  }
+}
+
+export async function removeUsers(req, res) {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "Id is needed",
+    });
+  }
+  try {
+    const user = await userModel.findByIdAndDelete(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "User deleted",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete user",
+      error: error.message,
+    });
+  }
+}
