@@ -17,8 +17,11 @@ import {
   useRegisterUserMutation,
 } from "@/features/api/userAuthApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [signupInput, setSignupInput] = useState({
     name: "",
     email: "",
@@ -69,6 +72,7 @@ export default function Login() {
     if (loginIsSuccess) {
       toast.success("User logged in successfully");
       setLoginInput({ email: "", password: "" });
+      navigate("/");
     } else if (loginIsError) {
       toast.error("Failed to login");
     }

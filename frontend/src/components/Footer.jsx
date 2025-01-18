@@ -1,9 +1,7 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Footer() {
-  const location = useLocation();
-
   return (
     <>
       <div className="sm:flex sm:gap-8 sm:flex-row  w-full flex flex-col gap-12 min-h-[20vh]">

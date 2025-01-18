@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import { Button } from "./ui/button";
 import ModdleToggle from "./ModdleToggle";
 
 function Navbar() {
-  const user = false;
+  const user = true;
   const navigate = useNavigate();
 
   return (
@@ -28,17 +28,20 @@ export default Navbar;
 
 function DesktopNavbar({ user, navigate }) {
   return (
-    <nav className="w-full  hidden fixed top-0 left-0 z-10">
-      <div className="max-w-7xl  mx-auto px-2 border-b py-4 shadow flex items-center justify-between">
-        <Link to="/" className="font-mono tracking-wider text-xl font-bold">
+    <nav className="w-full fixed top-0 left-0 z-10  bg-opacity-70 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-2 py-4 flex items-center justify-between shadow-md">
+        <Link
+          to="/"
+          className="font-mono tracking-wider text-xl font-bold text-gray-800"
+        >
           Course
         </Link>
-        <div className="flex items-center ">
+        <div className="flex items-center">
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
+                <DropdownMenu asChild>
+                  <DropdownMenuTrigger asChild>
                     <Avatar>
                       <AvatarImage
                         src="https://github.com/shadcn.png"
@@ -50,8 +53,12 @@ function DesktopNavbar({ user, navigate }) {
                   <DropdownMenuContent>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>My Courses</DropdownMenuItem>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to={"/my-courses"}> My Courses</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to={"/profile"}>Profile</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Logout</DropdownMenuItem>
                     <DropdownMenuItem>Dashboard</DropdownMenuItem>
                   </DropdownMenuContent>
@@ -102,8 +109,12 @@ function MobileNavbar({ user, navigate }) {
                   <DropdownMenuContent>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>My Courses</DropdownMenuItem>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to={"/my-courses"}>My Courses</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to={"/profile"}>Profile</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Logout</DropdownMenuItem>
                     <DropdownMenuItem>Dashboard</DropdownMenuItem>
                   </DropdownMenuContent>

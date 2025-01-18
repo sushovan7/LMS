@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 
 function HeroSection() {
   return (
@@ -16,9 +17,12 @@ function HeroSection() {
             really <span className="font-mono text-[#23CFA6]">good</span> at.
           </h1>
         </div>
-        <Button className=" sm:h-16 h-14 text-xl bg-[#23CFA6] " size="lg">
-          Check Courses-Make an Impact
-        </Button>
+        <Link to={"/courses"}>
+          <Button className=" sm:h-16 h-14 text-xl bg-[#23CFA6] " size="lg">
+            Check Courses-Make an Impact
+          </Button>
+        </Link>
+
         {/* <div className="md:fixed hidden bg-red-400 md:top-[43vh] md:left-[70vw]  text-xs md:flex md:flex-col md:items-start">
           <p>
             Get ready to{" "}
