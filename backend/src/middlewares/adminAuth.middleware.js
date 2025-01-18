@@ -28,7 +28,8 @@ export async function adminAuth(req, res, next) {
       });
     }
 
-    req.admin = req;
+    req.admin = admin;
+
     next();
   } catch (error) {
     return res.status(400).json({

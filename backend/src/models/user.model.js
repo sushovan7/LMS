@@ -30,12 +30,14 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["INSTRUCTOR", "STUDENT"],
+      default: "Student",
     },
-    enrolledCourses: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-    },
+    enrolledCourses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
   },
   { timestamps: true }
 );

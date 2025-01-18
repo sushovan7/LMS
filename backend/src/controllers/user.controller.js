@@ -2,6 +2,7 @@ import { loginSchema, signupSchema } from "../utils/zodSchema.js";
 import { userModel } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
+import { courseModel } from "../models/course.model.js";
 
 export async function signup(req, res) {
   const requiredBody = signupSchema.safeParse(req.body);
@@ -200,6 +201,92 @@ export async function removeUsers(req, res) {
     return res.status(500).json({
       success: false,
       message: "Failed to delete user",
+      error: error.message,
+    });
+  }
+}
+
+export async function purchaseCourse(req, res) {
+  const _id = req.user._id;
+  const { courseId } = req.params;
+  if (!courseId) {
+    return res.status(400).json({
+      success: false,
+      message: "courseId is required",
+    });
+  }
+
+  try {
+    const course = await courseModel.findById(courseId);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    const user = await userModel.findById(_id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.enrolledCourses.includes(course._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "You are already enrolled in this course",
+      });
+    }
+
+    user.enrolledCourses.push(course._id);
+    course.studentsEnrolled.push(user._id);
+    await user.save();
+    await course.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Course purchased successfully",
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to purchase course",
+      error: error.message,
+    });
+  }
+}
+
+export async function getAllEnrolledUsersInCourse(req, res) {
+  const { courseId } = req.params;
+  if (!courseId) {
+    return res.status(400).json({
+      success: false,
+      message: "courseId is required",
+    });
+  }
+
+  try {
+    const course = await courseModel.findById(courseId).populate({
+      path: "studentsEnrolled",
+      select: "-password",
+    });
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      studentsEnrolled: course.studentsEnrolled,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch enrolled students",
       error: error.message,
     });
   }
