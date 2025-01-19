@@ -28,10 +28,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    role: {
-      type: String,
-      default: "Student",
-    },
+    role: { type: String, enum: ["admin", "student"], required: true },
     enrolledCourses: [
       {
         type: mongoose.Schema.Types.ObjectId,

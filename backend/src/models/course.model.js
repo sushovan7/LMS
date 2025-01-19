@@ -64,3 +64,24 @@ const courseSchema = new mongoose.Schema(
 );
 
 export const courseModel = mongoose.model("Course", courseSchema);
+
+// const CourseSchema = new Schema({
+//   title: { type: String, required: true },
+//   description: { type: String, required: true },
+//   price: { type: Number, required: true },
+//   instructorId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to Admin
+//   content: [
+//     {
+//       id: { type: String, required: true },
+//       title: { type: String, required: true },
+//       videoUrl: { type: String },
+//       duration: { type: Number } // Duration in minutes
+//     }
+//   ],
+//   enrolledStudents: [{ type: Schema.Types.ObjectId, ref: 'User' }], // References to Students
+//   rating: { type: Number, default: 0 }, // Average rating
+//   createdAt: { type: Date, default: Date.now },
+//   updatedAt: { type: Date, default: Date.now }
+// });
+
+// module.exports = mongoose.model('Course', CourseSchema);
