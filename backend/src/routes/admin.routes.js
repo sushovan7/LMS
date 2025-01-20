@@ -2,6 +2,7 @@ import express from "express";
 import { adminLogin } from "../controllers/admin.controller.js";
 import {
   createCourse,
+  getSingleCourse,
   getAllCourses,
   updateCourse,
   removeCourse,
@@ -31,5 +32,6 @@ adminRouter.post(
   createCourse
 );
 adminRouter.get("/all-courses", adminAuth, getAllCourses);
-adminRouter.put("/update-course/:id", adminAuth, updateCourse);
-adminRouter.delete("/remove-course/:id", adminAuth, removeCourse);
+adminRouter.get("/single-course/:courseId", adminAuth, getSingleCourse);
+adminRouter.put("/update-course/:courseId", adminAuth, updateCourse);
+adminRouter.delete("/remove-course/:courseId", adminAuth, removeCourse);

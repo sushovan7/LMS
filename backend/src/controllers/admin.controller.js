@@ -41,11 +41,16 @@ export async function adminLogin(req, res) {
       process.env.JWT_SECRET
     );
 
-    return res.status(201).json({
-      success: true,
-      message: "Admin LoggedIn successfully",
-      token: adminToken,
-    });
+    return res
+      .status(201)
+      .cookie("tokeen", adminToken, {
+        httpOnly: "true",
+        sameSite: "Strict",
+      })
+      .json({
+        success: true,
+        message: "Admin LoggedIn successfully",
+      });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -54,6 +59,7 @@ export async function adminLogin(req, res) {
     });
   }
 }
+
 export async function createCourse(req, res) {
   const { title, description, category, level, price, ratings = 0 } = req.body;
 
@@ -115,6 +121,7 @@ export async function createCourse(req, res) {
     });
   }
 }
+
 export async function getAllCourses(req, res) {
   try {
     const courses = await courseModel.find({}).populate("instructor");
@@ -137,11 +144,46 @@ export async function getAllCourses(req, res) {
     });
   }
 }
+
+export async function getSingleCourse(req, res) {
+  const { courseId } = req.params;
+
+  if (!courseId) {
+    return res.status(400).json({
+      success: false,
+      message: "Course id is required",
+    });
+  }
+
+  try {
+    const singleCourse = await courseModel.findById(courseId);
+    console.log(singleCourse);
+    if (!singleCourse) {
+      return res.status(400).json({
+        success: false,
+        message: "course not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Course found successfully",
+      singleCourse,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch course",
+      error: error.message,
+    });
+  }
+}
+
 export async function updateCourse(req, res) {
-  const { id } = req.params;
+  const { courseId } = req.params;
   const { title, description, category, level, price, ratings = 0 } = req.body;
 
-  if (!id) {
+  if (!courseId) {
     return res.status(400).json({
       success: false,
       message: "Course id is required",
@@ -157,9 +199,13 @@ export async function updateCourse(req, res) {
   if (ratings !== undefined) updates.ratings = ratings;
 
   try {
-    const updatedCourse = await courseModel.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
+    const updatedCourse = await courseModel.findByIdAndUpdate(
+      courseId,
+      updates,
+      {
+        new: true,
+      }
+    );
 
     if (!updatedCourse) {
       return res.status(400).json({
@@ -180,10 +226,18 @@ export async function updateCourse(req, res) {
     });
   }
 }
+
 export async function removeCourse(req, res) {
-  const { id } = req.params;
+  const { courseId } = req.params;
+
+  if (!courseId) {
+    return res.status(400).json({
+      success: false,
+      message: "Course id is required",
+    });
+  }
   try {
-    const deletedCourse = await courseModel.findByIdAndDelete(id);
+    const deletedCourse = await courseModel.findByIdAndDelete(courseId);
     if (!deletedCourse) {
       return res.status(400).json({
         success: false,
